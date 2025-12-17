@@ -17,6 +17,13 @@ function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
     });
 }
 
+function escapeChars(input: string): string {
+    return input
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
 async function oraParloIo(image: sharp.Sharp, msg: TelegramBot.Message) {
     const resized = await image
         .png()
@@ -98,7 +105,7 @@ bot.onText(/^\/oraparloio(?:@\w+)?(?:\s+(.+))?$/, async (msg, match) => {
     try {
         const textImage = await sharp({
             text: {
-                text: `<span foreground="white">${text}</span>`,
+                text: `<span foreground="white">${escapeChars(text)}</span>`,
                 width: 200,
                 height: 200,
                 rgba: true,
@@ -108,4 +115,11 @@ bot.onText(/^\/oraparloio(?:@\w+)?(?:\s+(.+))?$/, async (msg, match) => {
     } catch (error) {
         await sendError(msg, error);
     }
+});
+
+bot.onText(/^\/start(?:@\w+)?(?:\s+(.+))?$/, async (msg, match) => {
+    bot.sendMessage(msg.chat.id, 'Ora parlo io.\n\nUsa <code>/oraparloio &lt;messaggio&gt;</code>\n\n<i>Es. <code>/oraparloio caco</code></i>', {
+        reply_to_message_id: msg.message_id,
+        parse_mode: 'HTML'
+    });
 });
