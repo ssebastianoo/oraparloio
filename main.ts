@@ -11,7 +11,12 @@ bot.onText(/^\/oraparloio(?:@\w+)?(?:\s+(.+))?$/, async (msg, match) => {
 
     const resp = match[1];
 
-    const text = resp?.trim();
+    let text = resp?.trim();
+
+
+    if (!text && msg.reply_to_message) {
+        text = msg.reply_to_message.text || '';
+    }
 
     if (!text || text.length === 0) {
         bot.sendMessage(msg.chat.id, 'Usa `/oraparloio <messaggio>`\nEs. `/oraparloio caco`', {
