@@ -22,6 +22,13 @@ bot.onText(/^\/oraparloio(?:@\w+)?(?:\s+(.+))?$/, async (msg, match) => {
         return;
     }
 
+    if (text.length > 50) {
+        bot.sendMessage(msg.chat.id, 'Il messaggio non può superare i 50 caratteri.', {
+            reply_to_message_id: msg.message_id,
+        });
+        return;
+    }
+
     const textImage = await sharp({
         text: {
             text: `<span foreground="white">${text}</span>`,
