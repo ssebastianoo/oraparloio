@@ -17,7 +17,7 @@ function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
     });
 }
 
-async function oraParloIo(image: sharp.Sharp, text: string, msg: TelegramBot.Message) {
+async function oraParloIo(image: sharp.Sharp, msg: TelegramBot.Message) {
     const resized = await image
         .png()
         .resize({ width: 250, height: 68, fit: 'fill' })
@@ -52,7 +52,7 @@ async function handlePicture(msg: TelegramBot.Message) {
 
     try {
         const img = await sharp(buffer).toBuffer();
-        await oraParloIo(sharp(img), 'photo', msg);
+        await oraParloIo(sharp(img), msg);
     } catch (error) {
         await sendError(msg, error);
     }
@@ -104,7 +104,7 @@ bot.onText(/^\/oraparloio(?:@\w+)?(?:\s+(.+))?$/, async (msg, match) => {
                 rgba: true,
             }
         })
-        await oraParloIo(textImage, text, msg);
+        await oraParloIo(textImage, msg);
     } catch (error) {
         await sendError(msg, error);
     }
