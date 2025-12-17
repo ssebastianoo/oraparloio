@@ -65,22 +65,9 @@ async function handlePicture(msg: TelegramBot.Message) {
     }
 }
 
-bot.on('photo', async (msg) => {
-    if (!msg.caption || !msg.caption.toLowerCase().startsWith('/oraparloio')) return;
-    await handlePicture(msg);
-});
+async function handleText(msg: TelegramBot.Message, arg: string) {
 
-bot.onText(/^\/oraparloio(?:@\w+)?(?:\s+(.+))?$/, async (msg, match) => {
-    if (!match || match.length < 2) return;
-
-    if (msg.reply_to_message && msg.reply_to_message.photo) {
-        await handlePicture(msg.reply_to_message);
-        return;
-    }
-
-    const resp = match[1];
-
-    let text = resp?.trim();
+    let text = arg;
 
     if (!text && msg.reply_to_message) {
         text = msg.reply_to_message.text || '';
@@ -115,6 +102,25 @@ bot.onText(/^\/oraparloio(?:@\w+)?(?:\s+(.+))?$/, async (msg, match) => {
     } catch (error) {
         await sendError(msg, error);
     }
+}
+
+bot.on('photo', async (msg, match) => {
+    if (!msg.caption || !msg.caption.toLowerCase().startsWith('/oraparloio')) return;
+
+    await handlePicture(msg);
+});
+
+bot.onText(/^\/oraparloio(?:@\w+)?(?:\s+(.+))?$/, async (msg, match) => {
+    if (!match || match.length < 2) return;
+
+    const text = match[1]?.trim();
+
+    if (!text && msg.reply_to_message && msg.reply_to_message.photo) {
+        await handlePicture(msg.reply_to_message);
+        return;
+    }
+
+    await handleText(msg, text);
 });
 
 bot.onText(/^\/start(?:@\w+)?(?:\s+(.+))?$/, async (msg, match) => {
