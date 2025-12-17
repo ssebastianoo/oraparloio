@@ -11,9 +11,20 @@ bot.onText(/^\/oraparloio(?:@\w+)?(?:\s+(.+))?$/, async (msg, match) => {
 
     const resp = match[1];
 
+    const text = resp?.trim();
+
+    if (!text || text.length === 0) {
+        bot.sendMessage(msg.chat.id, 'Usa `/oraparloio <messaggio>`\nEs. `/oraparloio caco`', {
+            parse_mode: 'Markdown',
+            reply_to_message_id: msg.message_id,
+        }
+        );
+        return;
+    }
+
     const textImage = await sharp({
         text: {
-            text: `<span foreground="white">${resp}</span>`,
+            text: `<span foreground="white">${text}</span>`,
             width: 200,
             height: 200,
             rgba: true,
