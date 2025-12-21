@@ -113,7 +113,7 @@ bot.on('photo', async (msg, match) => {
 bot.onText(/^\/ora(parloio)?(?:@\w+)?(?:\s+(.+))?$/, async (msg, match) => {
     if (!match || match.length < 2) return;
 
-    const text = match[1]?.trim();
+    const text = match[2]?.trim();
 
     if (!text && msg.reply_to_message && msg.reply_to_message.photo) {
         await handlePicture(msg.reply_to_message);
